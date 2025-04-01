@@ -1,0 +1,23 @@
+{
+  "name": "discord-starter",
+  "version": "1.0.0",
+  "engines": {
+    "node": "12.x"
+  },
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "botkit-discord": "^0.1.3",
+    "express": "^4.17.1",
+    "minimist": "^1.2.5"
+  },
+  "devDependencies": {
+    "minimist": ">=1.2.2"
+  }
+}
