@@ -1,0 +1,327 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+
+<!-- You might want to try something fancier: -->
+<!-- html/nunjucks docs: https://mozilla.github.io/nunjucks/ -->
+<!-- pug: https://pugjs.org/ -->
+<!-- haml: http://haml.info/ -->
+<!-- hbs(handlebars): http://handlebarsjs.com/ -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- COMMON TAGS -->
+    <meta charset="utf-8" />
+    <title>Glitch Discord Bot Starter Kit</title>
+    <!-- Search Engine -->
+    <meta
+      name="description"
+      content="Build a Discord Bot on Glitch with this interactive install guide"
+    />
+    <meta
+      name="image"
+      content="https://cdn.glitch.com/ca1b081c-b4c8-41bc-bb08-91d500baeab9%2Froboticon.png"
+    />
+    <!-- Schema.org for Google -->
+    <meta itemprop="name" content="Glitch Discord Bot Starter Kit" />
+    <meta
+      itemprop="description"
+      content="Build a Discord Bot on Glitch with this interactive install guide"
+    />
+    <meta
+      itemprop="image"
+      content="https://cdn.glitch.com/ca1b081c-b4c8-41bc-bb08-91d500baeab9%2Froboticon.png"
+    />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Glitch Discord Bot Starter Kit" />
+    <meta
+      name="twitter:description"
+      content="Build a Discord Bot on Glitch with this interactive install guide"
+    />
+    <meta name="twitter:site" content="@glitch" />
+    <meta
+      name="twitter:image:src"
+      content="https://cdn.glitch.com/ca1b081c-b4c8-41bc-bb08-91d500baeab9%2Froboticon.png"
+    />
+    <!-- Open Graph general (Facebook, Pinterest & Google+) -->
+    <meta name="og:title" content="Glitch Discord Bot Starter Kit" />
+    <meta
+      name="og:description"
+      content="Build a Discord Bot on Glitch with this interactive install guide"
+    />
+    <meta
+      name="og:image"
+      content="http://cdn.glitch.com/ca1b081c-b4c8-41bc-bb08-91d500baeab9%2Froboticon.png"
+    />
+    <meta name="og:url" content="http://starter-botkit-discord.glitch.me/" />
+    <meta name="og:type" content="website" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- import the webpage's stylesheet -->
+    <link
+      href="https://unpkg.com/nes.css@2.2.0/css/nes.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+
+    <!-- import the webpage's client-side javascript file -->
+    <script src="/client.js" defer></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Glitch Discord Bot Starter Kit</h1>
+      <h2>Setup <span class="domain-name-title"></span>!</h2>
+    </header>
+    <main>
+      <section>
+        <div class="nes-balloon from-left">
+          <p>
+            Hooray! You've finished the <a href="/install">install guide</a> and
+            are ready to start setting your bot up.
+          </p>
+        </div>
+      </section>
+      <section>
+        <div class="nes-container is-light with-title">
+          <h2 class="title">Add your bot to a Discord server</h2>
+          <p>Now you need two things:</p>
+          <ul class="nes-list is-disc">
+            <li>A Discord Server</li>
+            <li>
+              The
+              <a
+                href="https://support.discordapp.com/hc/en-us/articles/214836687-Role-Management-101"
+                target="new"
+                >"Manage Server"</a
+              >
+              permission - if you created the server you probably already have
+              it
+            </li>
+            <li>
+              A special link called a "Oauth URL"- you can visit this link and
+              select what server you want to add the bot to
+            </li>
+          </ul>
+
+          <div class="message-list">
+            <div class="message -left">
+              <i class="nes-bcrikko"></i>
+              <!-- Balloon -->
+              <div class="nes-balloon from-left">
+                But I don't have a Discord Server :(
+              </div>
+            </div>
+
+            <div class="message -right">
+              <!-- Balloon -->
+              <div class="nes-balloon from-right">
+                Don't worry! You can create your own.
+                <a
+                  href="https://support.discordapp.com/hc/en-us/articles/204849977-How-do-I-create-a-server-"
+                  target="new"
+                  >Click here to learn how.</a
+                >
+              </div>
+              <i class="nes-bcrikko"></i>
+            </div>
+            <div class="message -left">
+              <i class="nes-bcrikko"></i>
+              <!-- Balloon -->
+              <div class="nes-balloon from-left">
+                Sweet I just created my own server for bot testing! Now what?
+              </div>
+            </div>
+
+            <div class="message -right">
+              <!-- Balloon -->
+              <div class="nes-balloon from-right">
+                NIIIICE! If your bot is set up right your Oauth URL should show
+                up below!
+              </div>
+              <i class="nes-bcrikko"></i>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <div
+              id="no-client-found"
+              class="nes-container is-rounded with-title"
+            >
+              <p class="title">Oauth URL</p>
+              <div class="nes-badge"><span class="is-error">error</span></div>
+              I tried to get you the URL but I couldn't because something is
+              wrong. Check out the
+              <a href="/install">Install guide to get it set up</a>
+            </div>
+          </div>
+          <div id="client-found">
+            <h3>Bot Authorization URL</h3>
+            <p>
+              When you visit this URL it will give you the option to add your
+              bot to the server
+            </p>
+            <div class="nes-field">
+              <label for="oauth-url">Bot authorization URL</label>
+              <input
+                readonly
+                class="copyurl nes-input"
+                id="oauth-url"
+                type="text"
+                value=""
+              />
+            </div>
+            <div class="buttons">
+              <a
+                href=""
+                id="oauth-url-go"
+                class="nes-btn is-success"
+                target="new"
+                >Go</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="nes-container is-light with-title">
+          <h2 class="title">
+            Set up Boosted Apps- Optional but highly recommended!
+          </h2>
+          <p>
+            As you learned in the <a href="/install">install</a> guide, Glitch apps normally sleep after five minutes. So they won't respond to messages. 
+            BUT with Boosted Apps they'll stay online and responding to messages 24/7. 
+          </p>
+          <span>
+            <a
+              href="https://glitch.com/pricing?utm_medium=weblink&utm_source=discord%20starter&utm_campaign=none"
+              target="pro"
+              class="nes-btn is-primary"
+            >
+              <i class="nes-icon star"></i> Unlock Boosted Apps
+              <i class="nes-icon star"></i>
+            </a>
+          </span>
+        </div>
+      </section>
+
+      <section>
+        <div class="nes-container is-light with-title">
+          <h2 class="title">Test Your Bot</h2>
+          <p>
+            Your Discord Bot is now ready to test! To test go to the Discord
+            Server. Start typing @ and then the name of your bot (you set up the
+            name in the <a href="/install">install guide</a> when you created n
+            <a href="https://discordapp.com/developers/applications/"
+              >Discord App</a
+            >). You should see your bot in the options with a little green dot
+            (which indicates it's online).
+          </p>
+          <img
+            src="https://cdn.glitch.com/ca1b081c-b4c8-41bc-bb08-91d500baeab9%2Ftest-botkit-starter.png?v=1565648161097"
+            class="img-fluid"
+          />
+          <p class="spaced">
+            Here is the fun part. Now once you've selected to mention your bot,
+            type "!thanks" and the name of someone you appreciate on your
+            server.
+          </p>
+          <img
+            src="https://cdn.glitch.com/ca1b081c-b4c8-41bc-bb08-91d500baeab9%2F%23general%202019-08-12%2017-24-44.png?v=1565648717387"
+            class="img-fluid"
+          />
+          <p class="spaced">
+            Your bot should respond with a message tagging that person to let
+            them know how you feel.
+          </p>
+
+          <div class="nes-container is-dark with-title">
+            <p class="title">Not working?</p>
+            <p>
+              Oh no! Head to our
+              <a href="https://support.glitch.com/c/discord-help"
+                >Discord Support Forum</a
+              >
+              to get help.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div class="nes-container is-light with-title">
+          <h2 class="title">Security Tips!</h2>
+          <p>Here are some tips for keeping your bot secure:</p>
+          <div class="info-box">
+            <div class="nes-container is-rounded is-dark">
+              <p>
+                The only place you should copy/put your Discord API token is in
+                <code>.env</code>
+              </p>
+            </div>
+          </div>
+          <div class="info-box">
+            <div class="nes-container is-rounded is-dark">
+              <p>
+                Your code is public (anyone can see and copy it EXCEPT for
+                what's in <code>.env</code>), unless you make your Glitch app
+                <a href="https://glitch.com/help/privateproject/">private</a>.
+              </p>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <div class="nes-container is-rounded is-dark">
+              <p>
+                If you add
+                <a
+                  href="https://glitch.com/help/how-do-i-invite-collaborators-to-edit-my-project/"
+                  >collaborators</a
+                >
+                to your project they will be able to see your .env and copy the
+                code. Only add them if you trust them!
+              </p>
+            </div>
+          </div>
+          <i class="snes-logo"></i>
+          <div class="info-box">
+            <div class="nes-container is-rounded is-dark">
+              <p>
+                If you remove a collaborator or accidentally share your token,
+                you should also reset your Discord API token by going to
+                <a href="https://discordapp.com/developers/applications"
+                  >The Discord Developer portal</a
+                >, clicking on the bot's application, heading to the "bot"
+                section and clicking "regenerate".
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div class="nes-container is-light with-title">
+          <h2 class="title">Code Your Bot</h2>
+          <i class="nes-jp-logo"></i>
+          <p>
+            Head to your project's
+            <a href="" id="readme-file-link">Readme.md</a> for info about the
+            how the code works and how to turn it into the bot of your dreams!
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer>Made with <a href="https://glitch.com">Glitch</a>! <a href="https://github.com/glitchdotcom/starter-discord">Feedback? Bugs? Open an issue or PR on GitHub.</a></footer>
+
+    <!-- include the Glitch button to show what the webpage is about and
+          to make it easier for folks to view source and remix -->
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+</html>

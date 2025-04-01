@@ -1,0 +1,359 @@
+<!-- This is a static file -->
+<!-- served from your routes in server.js -->
+
+<!-- You might want to try something fancier: -->
+<!-- html/nunjucks docs: https://mozilla.github.io/nunjucks/ -->
+<!-- pug: https://pugjs.org/ -->
+<!-- haml: http://haml.info/ -->
+<!-- hbs(handlebars): http://handlebarsjs.com/ -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- COMMON TAGS -->
+    <meta charset="utf-8" />
+    <title>Glitch Discord Bot Starter Kit</title>
+    <!-- Search Engine -->
+    <meta
+      name="description"
+      content="Build a Discord Bot on Glitch with this interactive install guide"
+    />
+    <meta
+      name="image"
+      content="https://cdn.glitch.com/ca1b081c-b4c8-41bc-bb08-91d500baeab9%2Froboticon.png"
+    />
+    <!-- Schema.org for Google -->
+    <meta itemprop="name" content="Glitch Discord Bot Starter Kit" />
+    <meta
+      itemprop="description"
+      content="Build a Discord Bot on Glitch with this interactive install guide"
+    />
+    <meta
+      itemprop="image"
+      content="https://cdn.glitch.com/ca1b081c-b4c8-41bc-bb08-91d500baeab9%2Froboticon.png"
+    />
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Glitch Discord Bot Starter Kit" />
+    <meta
+      name="twitter:description"
+      content="Build a Discord Bot on Glitch with this interactive install guide"
+    />
+    <meta name="twitter:site" content="@glitch" />
+    <meta
+      name="twitter:image:src"
+      content="https://cdn.glitch.com/ca1b081c-b4c8-41bc-bb08-91d500baeab9%2Froboticon.png"
+    />
+    <!-- Open Graph general (Facebook, Pinterest & Google+) -->
+    <meta name="og:title" content="Glitch Discord Bot Starter Kit" />
+    <meta
+      name="og:description"
+      content="Build a Discord Bot on Glitch with this interactive install guide"
+    />
+    <meta
+      name="og:image"
+      content="http://cdn.glitch.com/ca1b081c-b4c8-41bc-bb08-91d500baeab9%2Froboticon.png"
+    />
+    <meta name="og:url" content="http://starter-botkit-discord.glitch.me/" />
+    <meta name="og:type" content="website" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- import the webpage's stylesheet -->
+    <link
+      href="https://unpkg.com/nes.css@2.2.0/css/nes.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Press+Start+2P"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/style.css" />
+
+    <!-- import the webpage's client-side javascript file -->
+    <script src="/install.js" defer></script>
+  </head>
+
+  <body>
+    <header>
+      <h1>Glitch Discord Bot Starter Kit</h1>
+      <h2>Installing Your Bot</h2>
+    </header>
+
+    <main>
+      <section>
+        <div class="nes-container is-light with-title">
+          <h2 class="title">Remix this project</h2>
+          <p>
+            Welcome to our interactive Discord Bot install guide! 
+          </p>
+          <div class="nes-container with-title is-centered">
+            <p class="title">This Project's URL:</p>
+            <i class="nes-icon is-large star"></i>
+            <p id="project_url"></p>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div class="nes-container is-light with-title">
+          <h2 class="title">Create your Discord application</h2>
+          <div class="message-list">
+            <div class="message -left">
+              <i class="nes-bcrikko"></i>
+              <!-- Balloon -->
+              <div class="nes-balloon from-left">
+                Complete these at the
+                <a
+                  href="https://discordapp.com/developers/applications"
+                  target="new"
+                  >Discord Developer Portal</a
+                >
+              </div>
+            </div>
+          </div>
+          <div class="checklist">
+            <label>
+              <input type="checkbox" class="nes-checkbox" />
+              <span>
+                Login to the
+                <a
+                  href="https://discordapp.com/developers/applications"
+                  target="new"
+                  >My Applications section of the Discord Developer Portal</a
+                >
+              </span>
+            </label>
+
+            <label>
+              <input type="checkbox" class="nes-checkbox" />
+              <span> Click "New Application" to create an application </span>
+            </label>
+
+            <label>
+              <input type="checkbox" class="nes-checkbox" />
+              <span>
+                Click on "Bot" on the sidebar to go to the "Bot" settings page
+              </span>
+            </label>
+            <label>
+              <input type="checkbox" class="nes-checkbox" />
+              <span>
+                Click the "Add bot" button on the "Bot" settings page
+              </span>
+            </label>
+            <label>
+              <input type="checkbox" class="nes-checkbox" />
+              <span>
+                You should see a "token" section. Click "copy" to copy the
+                Discord Bot Token
+              </span>
+            </label>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div class="nes-container is-light with-title">
+          <h2 class="title">Discord tokens</h2>
+          <br />
+          <div class="nes-badge"><span class="is-warning">Warning!</span></div>
+          <div class="lists">
+            <ul class="nes-list is-circle">
+              <li>A token is a secret password</li>
+              <li>It can be used to hack your bot!</li>
+            </ul>
+            <div class="message-list">
+              <div class="message -left">
+                <i class="nes-bcrikko"></i>
+                <!-- Balloon -->
+                <div class="nes-balloon from-left">
+                  Yikes so how do I keep it secure?
+                </div>
+              </div>
+
+              <div class="message -right">
+                <!-- Balloon -->
+                <div class="nes-balloon from-right">
+                  Only put it in one place! That's the .env file!
+                </div>
+                <i class="nes-bcrikko"></i>
+              </div>
+            </div>
+            <br />
+            <p>
+              Your .env file might look complicated, but basically the format is
+              to put your secret token after the "=". Don't add any extra spaces
+              because that can cause errors. So let's say your Discord Bot token
+              is PASSWORD123. Then your .env would look like:
+            </p>
+            <pre>
+              <code>
+                GLITCH_DEBUGGER=
+                # Environment Config
+
+                # store your secrets and config variables in here
+                # only invited collaborators will be able to see your .env values
+
+                # reference these in your code with process.env.SECRET
+
+                DISCORD_TOKEN=PASSWORD123
+                # note: .env is a shell file so there can't be spaces around =
+                utm_source=starter-botkit-discord
+                utm_medium=button
+                utm_campaign=glitchButton
+              </code>
+            </pre>
+            <a
+              href=""
+              class="envFileLink nes-btn"
+              id="envFileLinkDiscord"
+              target="editit"
+            >
+              <i class="nes-icon is-small star"></i> Click here to go to your
+              <code>.env</code> file <i class="nes-icon is-small star"></i>
+            </a>
+            <br />
+            <div class="checklist">
+              <label>
+                <input type="checkbox" class="nes-checkbox" />
+                <span> Go to your .env file </span>
+              </label>
+
+              <label>
+                <input type="checkbox" class="nes-checkbox" />
+                <span>
+                  Copy your Discord Bot Token next to "DISCORD_TOKEN="</span
+                >
+              </label>
+            </div>
+          </div>
+          <div class="nes-container is-rounded is-dark with-title">
+            <div class="title">Info</div>
+            <p>
+              You don't want to put tokens in <code>server.js </code> because by
+              default in Glitch anyone can see that file. And if you copy the
+              project, it will copy the file with the secure token. Yikes!
+            </p>
+          </div>
+        </div>
+      </section>
+      <section>
+        <div class="nes-container  with-title">
+          <h2 class="title">Sign up for Boosted Apps(OPTIONAL)</h2>
+          <div class="message-list">
+            <div class="message -left">
+              <i class="nes-bcrikko"></i>
+              <!-- Balloon -->
+              <div class="nes-balloon from-left">What are Boosted Apps?</div>
+            </div>
+
+            <div class="message -right">
+              <!-- Balloon -->
+              <div class="nes-balloon from-right">
+                Boosted apps are Glitch apps that are powered up so they don't
+                go to sleep. They are a benefit for paid Glitch subscribers.
+              </div>
+              <i class="nes-bcrikko"></i>
+            </div>
+          </div>
+          <div class="lists">
+            <ul class="nes-list is-circle">
+              <li>
+                Non-boosted Glitch apps automatically "sleep" after 5 minutes
+              </li>
+              <li>
+                <a href="https://glitch.com/help/restrictions/"
+                  >You can read more about that and other restrictions here.</a
+                >
+              </li>
+              <li>Sleeping bots drop out of any Discord servers they are in</li>
+              <li>Sleeping bots will not respond to any messages</li>
+            </ul>
+          </div>
+
+          <span>
+            <a
+              href="https://glitch.com/pricing?utm_medium=weblink&utm_source=discord%20starter&utm_campaign=none"
+              target="pro"
+              class="nes-btn is-primary"
+            >
+              <i class="nes-icon star"></i> Unlock Boosted Apps
+              <i class="nes-icon star"></i>
+            </a>
+          </span>
+        </div>
+      </section>
+
+      <section>
+        <div class="nes-container  with-title">
+          <h2 class="title">Test your install</h2>
+          <p>Click the button to see if your .env is set up right!</p>
+          <button id="checkInstallButton" class="nes-btn">
+            Check Connection
+          </button>
+          <div class="info-box">
+            <div id="connectedSection" class="nes-container is-rounded">
+              <i class="nes-icon trophy is-large"></i>
+              <p>
+                Looks like your token is working! Click the refresh button to
+                refresh the page and see further steps for building your bot:
+              </p>
+              <button id="refreshPageButton" class="nes-btn is-primary">
+                Refresh!
+              </button>
+            </div>
+          </div>
+          <div class="info-box">
+            <div id="errorSection" class="nes-container is-rounded">
+              <p>
+                Oops look's like there might be something wrong with your
+                <code>.env</code> file. Check it out and then try again.
+              </p>
+              <h3>Common issues</h3>
+              <ul class="nes-list is-disc">
+                <li>Spaces between <code>=</code> and the token</li>
+                <li>Spaces after the token</li>
+                <li>Missing your Discord Bot token</li>
+              </ul>
+            </div>
+          </div>
+          <div class="info-box">
+            <div id="apiErrorSection" class="nes-container is-rounded">
+              <p>
+                the good news is you have a good .env file the bad news is it
+                doesn't recognize your token. Head to the
+                <a
+                  href="https://discordapp.com/developers/applications"
+                  target="new"
+                  >Discord Developer Portal
+                </a>
+                to make sure you have the right one
+              </p>
+            </div>
+          </div>
+          <div class="info-box">
+            <div id="timedOut" class="nes-container is-rounded">
+              <p>
+                OK so this is awkward...but it appears this project is living on
+                a banned host. Please post the name of this Glitch app here
+                <a
+                  href="https://support.glitch.com/t/discord-ban-mega-thread-the-second-discord-bot-something-took-too-long-to-do/12157"
+                  target="support"
+                  >this support forum thread</a
+                >
+                and we'll fix it asap!
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>Made with <a href="https://glitch.com">Glitch</a>! <a href="https://github.com/glitchdotcom/starter-discord">Feedback? Bugs? Open an issue or PR on GitHub.</a></footer>
+
+    <!-- include the Glitch button to show what the webpage is about and
+          to make it easier for folks to view source and remix -->
+    <div class="glitchButton" style="position:fixed;top:20px;right:20px;"></div>
+    <script src="https://button.glitch.me/button.js"></script>
+  </body>
+</html>
