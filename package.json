@@ -4,10 +4,13 @@
   "description": "",
   "main": "index.js",
   "type": "module",
+    "engines" : {
+    "node" : ">=16.0.0 <17.0.0"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "debug": "nodemon --exec node server.js"
+    "debug": "nodemon --exec node index.js"
   },
   "author": "dietrich ayala",
   "license": "MIT",
