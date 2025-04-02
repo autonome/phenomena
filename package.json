@@ -1,23 +1,18 @@
 {
-  "name": "discord-starter",
+  "name": "phenomena",
   "version": "1.0.0",
-  "engines": {
-    "node": "12.x"
-  },
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node index.js",
+    "debug": "nodemon --exec node server.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "dietrich ayala",
+  "license": "MIT",
   "dependencies": {
-    "botkit-discord": "^0.1.3",
-    "express": "^4.17.1",
-    "minimist": "^1.2.5"
-  },
-  "devDependencies": {
-    "minimist": ">=1.2.2"
+    "discord.js": "^14.18.0",
+    "dotenv": "^16.4.7"
   }
 }
