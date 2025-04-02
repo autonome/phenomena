@@ -31,6 +31,7 @@ const client = new Client({
   partials: [Partials.Channel, Partials.Message, Partials.Reaction],
 });
 
+/*
 const commands = new Collection();
 client.commands = commands;
 
@@ -102,6 +103,7 @@ const rest = new REST().setToken(token);
     console.log(error.rawError.errors[0].name._errors);
   }
 })();
+*/
 
 // When the client is ready, run this code (only once).
 // The distinction between `client: Client<boolean>` and `readyClient: Client<true>` is important for TypeScript developers.
