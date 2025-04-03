@@ -11,6 +11,7 @@ import {
   Routes } from 'discord.js';
 import 'dotenv/config';
 import { upload } from './github.js';
+import clean from './clean.js';
 const __dirname = import.meta.dirname;
 
 const token = process.env.DISCORD_TOKEN;
@@ -102,10 +103,13 @@ Message {
 client.on('messageCreate', async (msg) => {
   // for all messages from users with role
   if (msg.member.roles.cache.has(fascinatorRoleId)) {
-    console.log('Fascinator detected, do something fun...');
+    // remove usernames
+    const cleaned = clean(msg.content);
 
     // upload to github
-    await upload(githubToken, 'new msg', msg.content);
+    console.log('Fascinator msg detected, uploading...');
+    await upload(githubToken, 'new msg', cleaned);
+    console.log('done.');
   }
 
   // for testing: reply to messages directly addressing the bot
