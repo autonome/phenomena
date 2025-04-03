@@ -169,7 +169,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 client.login(token);
 
 import http from 'http';
-const hostname = '::';
+const hostname = '0.0.0.0';
 const port = 3000;
 
 http.createServer((req, res) => {
