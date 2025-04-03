@@ -10,11 +10,13 @@ import {
   REST,
   Routes } from 'discord.js';
 import 'dotenv/config';
+import { upload } from './github.js';
 const __dirname = import.meta.dirname;
 
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.DISCORD_CLIENT_ID;
 const guildId = process.env.DISCORD_GUILD_ID;
+const githubToken = process.env.GH_TOKEN;
 
 const botId = '1356506282114158623';
 const fascinatorRoleId = '1356666056201998426';
@@ -98,12 +100,15 @@ Message {
 }
 */
 client.on('messageCreate', async (msg) => {
-  // all messages from users with role
+  // for all messages from users with role
   if (msg.member.roles.cache.has(fascinatorRoleId)) {
     console.log('Fascinator detected, do something fun...');
+
+    // upload to github
+    await upload(githubToken, 'new msg', msg.content);
   }
 
-  // message for bot
+  // for testing: reply to messages directly addressing the bot
   if (msg.content.startsWith(`<@${client.user.id}>`)) {
     await msg.reply('WHAT?!');
   }
