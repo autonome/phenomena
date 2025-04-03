@@ -16,6 +16,7 @@ const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.DISCORD_CLIENT_ID;
 const guildId = process.env.DISCORD_GUILD_ID;
 
+const botId = '1356506282114158623';
 const fascinatorRoleId = '1356666056201998426';
 const reactionRoleMessageId = '1356979729764450555';
 
@@ -97,8 +98,14 @@ Message {
 }
 */
 client.on('messageCreate', async (msg) => {
+  // all messages from users with role
   if (msg.member.roles.cache.has(fascinatorRoleId)) {
     console.log('Fascinator detected, do something fun...');
+  }
+
+  // message for bot
+  if (msg.content.startsWith(`<@${client.user.id}>`)) {
+    await msg.reply('WHAT?!');
   }
 });
 
@@ -148,3 +155,15 @@ client.on('messageReactionRemove', async (reaction, user) => {
 
 // Log in to Discord with your client's token
 client.login(token);
+
+import http from 'http';
+const hostname = "0.0.0.0";
+const port = process.env.PORT || 3000;
+
+http.createServer((req, res) => {
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.write("Hello, world!");
+    res.end();
+}).listen(port, () => {
+    console.log(`App is running on port ${port}`);
+});
