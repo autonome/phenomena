@@ -4,9 +4,6 @@
   "description": "",
   "main": "index.js",
   "type": "module",
-    "engines" : {
-    "node" : ">=16.0.0 <17.0.0"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
@@ -19,6 +16,7 @@
     "dotenv": "^16.4.7"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.7.10",
     "wrangler": "^4.6.0"
   }
 }
