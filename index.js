@@ -166,13 +166,13 @@ client.on('messageReactionRemove', async (reaction, user) => {
 client.login(token);
 
 import http from 'http';
-const hostname = "0.0.0.0";
-const port = process.env.PORT || 3000;
+const hostname = '::';
+const port = 3000;
 
 http.createServer((req, res) => {
     res.writeHead(200, { "Content-Type": "text/plain" });
     res.write("Hello, world!");
     res.end();
-}).listen(port, () => {
+}).listen(port, hostname, () => {
     console.log(`App is running on port ${port}`);
 });
