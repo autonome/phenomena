@@ -10,7 +10,7 @@ import {
   REST,
   Routes } from 'discord.js';
 import 'dotenv/config';
-import { upload } from './github.js';
+import { addFileToRepo } from './github.js';
 import clean from './clean.js';
 const __dirname = import.meta.dirname;
 
@@ -107,15 +107,18 @@ client.on('messageCreate', async (msg) => {
     const cleaned = clean(msg.content);
 
     // upload to github
-    console.log('Fascinator msg detected, uploading...');
-    await upload(githubToken, 'new msg', cleaned);
+    console.log('Fascinator msg detected, uploading msg...', msg.id);
+    const path = `msgs/${msg.id}.txt`;
+    await addFileToRepo(githubToken, path, 'new msg', cleaned);
     console.log('done.');
   }
 
+  /*
   // for testing: reply to messages directly addressing the bot
   if (msg.content.startsWith(`<@${client.user.id}>`)) {
     await msg.reply('WHAT?!');
   }
+  */
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
