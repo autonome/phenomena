@@ -10,8 +10,9 @@ import {
   REST,
   Routes } from 'discord.js';
 import 'dotenv/config';
-import { addFileToRepo } from './github.js';
+import { addFileToRepo, getFileFromRepo } from './github.js';
 import clean from './clean.js';
+import matchURLs from './matchURLs.js';
 const __dirname = import.meta.dirname;
 
 const token = process.env.DISCORD_TOKEN;
@@ -22,6 +23,14 @@ const githubToken = process.env.GH_TOKEN;
 const botId = '1356506282114158623';
 const fascinatorRoleId = '1356666056201998426';
 const reactionRoleMessageId = '1356979729764450555';
+
+// string of today's date in YYYY-MM-DD format
+const todayStr = () => {
+  const today = new Date();
+  const str = new Date(today.getTime() - (today.getTimezoneOffset() * 60000))
+    .toISOString().split('T')[0];
+  return str;
+};
 
 // Create a new client instance
 const client = new Client({
@@ -103,14 +112,53 @@ Message {
 client.on('messageCreate', async (msg) => {
   // for all messages from users with role
   if (msg.member.roles.cache.has(fascinatorRoleId)) {
+    console.log('✨ msg detected, processing msg...', msg.id);
+
     // remove usernames
     const cleaned = clean(msg.content);
 
-    // upload to github
-    console.log('Fascinator msg detected, uploading msg...', msg.id);
+    // upload msg to github
     const path = `msgs/${msg.id}.txt`;
     await addFileToRepo(githubToken, path, 'new msg', cleaned);
     console.log('done.');
+
+    // detect urls and upload to github
+    const newURLs = matchURLs(msg.content);
+
+    if (newURLs.length > 0) {
+      console.log('URLs detected, processing urls...');
+
+      // path for today's link file
+      const path = `urls/${todayStr()}.txt`;
+
+      // get sha if file for today exists
+      const file = await getFileFromRepo(githubToken, path);
+      const sha = file.hasOwnProperty('sha') ? file.sha : null;
+
+      // get URLs already saved today
+      const oldURLs = [];
+      if (sha) {
+        const response = await fetch(file.download_url);
+        const txt = await response.text();
+        oldURLs.push(...txt.split('\n'));
+      }
+
+      // check if there's a delta or not
+      const setsAreEqual = (a, b) => a.size === b.size && [...a].every(value => b.has(value));
+      const uniqueNew = new Set(newURLs);
+      const uniqueOld = new Set(oldURLs);
+
+      // if the new urls are already saved, do nothing
+      // otherwise merge the new and old urls
+      // and upload, replacing the old file
+      if (!setsAreEqual(uniqueNew, uniqueOld)) {
+        const uniqueMerged = [...new Set([...uniqueNew, ...uniqueOld])];
+        const content = uniqueMerged.join('\n');
+        await addFileToRepo(githubToken, path, 'new url(s)', content, sha);
+      }
+
+      console.log('done.');
+    }
   }
 
   /*
@@ -168,6 +216,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 // Log in to Discord with your client's token
 client.login(token);
 
+/*
 import http from 'http';
 const hostname = '0.0.0.0';
 const port = 3000;
@@ -179,3 +228,4 @@ http.createServer((req, res) => {
 }).listen(port, hostname, () => {
     console.log(`App is running on port ${port}`);
 });
+*/

@@ -1,21 +1,16 @@
-async function addFileToRepo(auth, path, message, content) {
+async function addFileToRepo(auth, path, message, content, sha = null) {
   const owner = 'ua-community';
   const repo = 'ua-discord-archive';
 
-  /*
-  // we could pay a round-trip penalty here, in case another process already
-  // wrote to this path... but why? see below.
-  const existingFile = await (await fetch(
-    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
-    {
-      method: 'GET',
-      headers: {
-        Accept: 'application/vnd.github+json',
-        Authorization: `Bearer ${auth}`
-      }
-    }
-  )).json();
-  */
+  const body = {
+    message: message,
+    content: btoa(content),
+  };
+
+  // doing a replace
+  if (sha !== null) {
+    body.sha = sha;
+  }
 
   // if file exists at path already, this fails w/ "Invalid request"
   // so consider this a one-round-trip penalty for not adding
@@ -28,10 +23,26 @@ async function addFileToRepo(auth, path, message, content) {
         Accept: 'application/vnd.github+json',
         Authorization: `Bearer ${auth}`
       },
-      body: JSON.stringify({
-        message: message,
-        content: btoa(content),
-      }),
+      body: JSON.stringify(body),
+    }
+  )).json();
+
+  return res;
+}
+
+// function to get the contents of a file from the repo
+async function getFileFromRepo(auth, path) {
+  const owner = 'ua-community';
+  const repo = 'ua-discord-archive';
+
+  const res = await (await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+    {
+      method: 'GET',
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${auth}`
+      }
     }
   )).json();
 
@@ -39,5 +50,6 @@ async function addFileToRepo(auth, path, message, content) {
 }
 
 export {
-  addFileToRepo
+  addFileToRepo,
+  getFileFromRepo
 };
