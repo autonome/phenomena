@@ -51,64 +51,6 @@ client.once(Events.ClientReady, readyClient => {
   console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
 
-/*
-Message {
-  channelId: '1352159794559189112',
-  guildId: '1309454711392305192',
-  id: '1356649632549306562',
-  createdTimestamp: 1743520877731,
-  type: 0,
-  system: false,
-  content: 'test',
-  author: User {
-    id: '364757227833131011',
-    bot: false,
-    system: false,
-    flags: UserFlagsBitField { bitfield: 0 },
-    username: 'dietrich1',
-    globalName: 'dietrich (UTC+1)',
-    discriminator: '0',
-    avatar: '3504189c77bfb50325ca8c70f36b4413',
-    banner: undefined,
-    accentColor: undefined,
-    avatarDecoration: null,
-    avatarDecorationData: null
-  },
-  pinned: false,
-  tts: false,
-  nonce: '1356649631051677696',
-  embeds: [],
-  components: [],
-  attachments: Collection(0) [Map] {},
-  stickers: Collection(0) [Map] {},
-  position: null,
-  roleSubscriptionData: null,
-  resolved: null,
-  editedTimestamp: null,
-  reactions: ReactionManager { message: [Circular *1] },
-  mentions: MessageMentions {
-    everyone: false,
-    users: Collection(0) [Map] {},
-    roles: Collection(0) [Map] {},
-    _members: null,
-    _channels: null,
-    _parsedUsers: null,
-    crosspostedChannels: Collection(0) [Map] {},
-    repliedUser: null
-  },
-  webhookId: null,
-  groupActivityApplication: null,
-  applicationId: null,
-  activity: null,
-  flags: MessageFlagsBitField { bitfield: 0 },
-  reference: null,
-  interactionMetadata: null,
-  interaction: null,
-  poll: null,
-  messageSnapshots: Collection(0) [Map] {},
-  call: null
-}
-*/
 client.on('messageCreate', async (msg) => {
   // for all messages from users with role
   if (msg.member.roles.cache.has(fascinatorRoleId)) {
@@ -160,13 +102,6 @@ client.on('messageCreate', async (msg) => {
       console.log('done.');
     }
   }
-
-  /*
-  // for testing: reply to messages directly addressing the bot
-  if (msg.content.startsWith(`<@${client.user.id}>`)) {
-    await msg.reply('WHAT?!');
-  }
-  */
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
@@ -216,16 +151,3 @@ client.on('messageReactionRemove', async (reaction, user) => {
 // Log in to Discord with your client's token
 client.login(token);
 
-/*
-import http from 'http';
-const hostname = '0.0.0.0';
-const port = 3000;
-
-http.createServer((req, res) => {
-    res.writeHead(200, { "Content-Type": "text/plain" });
-    res.write("Hello, world!");
-    res.end();
-}).listen(port, hostname, () => {
-    console.log(`App is running on port ${port}`);
-});
-*/
