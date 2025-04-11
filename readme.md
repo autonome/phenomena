@@ -10,6 +10,7 @@ For users who've opted in to a specific role, the bot archives content to a Gith
 The archive of messages and links:
 
 - Currently is a private Github repo
+- All usernames are replaced with `(user)`
 - U&A community needs to discuss whether to make public or not
 
 In the future the archive could:
