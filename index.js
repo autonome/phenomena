@@ -107,15 +107,15 @@ client.on('messageCreate', async (msg) => {
 client.on('messageReactionAdd', async (reaction, user) => {
   // Rehydrate the reaction object if it was partial
   if (reaction.partial) {
-		// If the message this reaction belongs to was removed, the fetching might
+    // If the message this reaction belongs to was removed, the fetching might
     // result in an API error which should be handled
-		try {
-			await reaction.fetch();
-		} catch (error) {
-			console.error('Something went wrong when fetching the message:', error);
-			// Return as `reaction.message.author` may be undefined/null
-			return;
-		}
+    try {
+      await reaction.fetch();
+    } catch (error) {
+      console.error('Something went wrong when fetching the message:', error);
+      // Return as `reaction.message.author` may be undefined/null
+      return;
+    }
   }
 
   if (reaction.message.id === reactionRoleMessageId
@@ -129,15 +129,15 @@ client.on('messageReactionAdd', async (reaction, user) => {
 client.on('messageReactionRemove', async (reaction, user) => {
   // Rehydrate the reaction object if it was partial
   if (reaction.partial) {
-		// If the message this reaction belongs to was removed, the fetching might
+    // If the message this reaction belongs to was removed, the fetching might
     // result in an API error which should be handled
-		try {
-			await reaction.fetch();
-		} catch (error) {
-			console.error('Something went wrong when fetching the message:', error);
-			// Return as `reaction.message.author` may be undefined/null
-			return;
-		}
+    try {
+      await reaction.fetch();
+    } catch (error) {
+      console.error('Something went wrong when fetching the message:', error);
+      // Return as `reaction.message.author` may be undefined/null
+      return;
+    }
   }
 
   if (reaction.message.id === reactionRoleMessageId
