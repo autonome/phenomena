@@ -2,15 +2,18 @@
 
 Phenomena is a bot for the [User & Agents](https://userandagents.com) Discord.
 
-Current features:
-- Archive messages from users who've opted-in, saving to `./msgs/{msg-id}.txt` in a Github repo
-- Archive links from users who've opted in, collecting in `./links/{YY-MM-DD}.txt` in a Github repo
+For users who've opted in to a specific role, the bot archives content to a Github repo:
+
+- Archives messages to `./msgs/{msg-id}.txt`
+- Archives links into daily digests in `./links/{YY-MM-DD}.txt`
 
 The archive of messages and links:
+
 - Currently is a private Github repo
 - U&A community needs to discuss whether to make public or not
 
 In the future the archive could:
+
 - Be usedto send periodic digests of shared links
 - Be used to train a model for a U&A aggregate brain
 - Be exposed via RAG or as an MCP server etc
@@ -23,7 +26,8 @@ Bot high level view
 - Node.js
 - Deployed to Fly.io
 - [DiscordJS](https://discordjs.guide/) for all the Discord stuff
-- Github API for archiving
+- Github API for storage
+- All data stored as text files
 
 Discord config
 - Created a role called `fascinator` with an emoji of ✨
