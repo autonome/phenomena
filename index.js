@@ -105,6 +105,9 @@ client.on('messageCreate', async (msg) => {
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
+  // XXX:temporarily disable
+  return;
+
   // Rehydrate the reaction object if it was partial
   if (reaction.partial) {
     // If the message this reaction belongs to was removed, the fetching might
