@@ -20,6 +20,9 @@ const clientId = process.env.DISCORD_CLIENT_ID;
 const guildId = process.env.DISCORD_GUILD_ID;
 const githubToken = process.env.GH_TOKEN;
 
+const owner = 'ua-community';
+const repo = 'ua-discord-archive';
+
 const botId = '1356506282114158623';
 const fascinatorRoleId = '1356666056201998426';
 const reactionRoleMessageId = '1356979729764450555';
@@ -59,9 +62,12 @@ client.on('messageCreate', async (msg) => {
     // remove usernames
     const cleaned = clean(msg.content);
 
+    // prepare message with metadata
+    const messageData = `UserId: ${msg.author.id}\nUsername: (user)\nTime: ${msg.createdAt.toISOString()}\n\n${cleaned}`;
+
     // upload msg to github
     const path = `msgs/${msg.id}.txt`;
-    await addFileToRepo(githubToken, path, 'new msg', cleaned);
+    await addFileToRepo(githubToken, owner, repo, path, 'new msg', messageData);
     console.log('done.');
 
     // detect urls and upload to github
@@ -74,7 +80,7 @@ client.on('messageCreate', async (msg) => {
       const path = `urls/${todayStr()}.txt`;
 
       // get sha if file for today exists
-      const file = await getFileFromRepo(githubToken, path);
+      const file = await getFileFromRepo(githubToken, owner, repo, path);
       const sha = file.hasOwnProperty('sha') ? file.sha : null;
 
       // get URLs already saved today
@@ -96,7 +102,7 @@ client.on('messageCreate', async (msg) => {
       if (!setsAreEqual(uniqueNew, uniqueOld)) {
         const uniqueMerged = [...new Set([...uniqueNew, ...uniqueOld])];
         const content = uniqueMerged.join('\n');
-        await addFileToRepo(githubToken, path, 'new url(s)', content, sha);
+        await addFileToRepo(githubToken, owner, repo, path, 'new url(s)', content, sha);
       }
 
       console.log('done.');
