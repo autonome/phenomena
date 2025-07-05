@@ -108,6 +108,13 @@ client.on('messageCreate', async (msg) => {
       console.log('done.');
     }
   }
+
+  /*
+  // for testing
+  if (msg.mentions.has(client.user.id)) {
+    msg.reply('Hello! I am the UA Discord Archive bot. I archive messages and URLs from this server.');
+  }
+  */
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
