@@ -44,3 +44,19 @@ Discord bot actions
   - Detects ✨ reactions to the `#start-here` message, and assigns the user the `fascinator` role
   - Archives each message from any ✨ user, saving it to `msgs/{discordMessageId}.txt`
   - Pulls URLs from messages from any ✨ user, adding them to `urls/{YYYY-MM-DD}.txt`
+
+
+## Deployment
+
+The bot is service agnostic, should work on either service, parallelized or not.
+
+Railway (current)
+- test locally w/ remote vars: `railway run npm start`
+- deploy changes: `railway up`
+
+Fly.io (prev)
+- designed to work w/ >1 instance (Fly.io's default is 2)
+- deploys on new commits to main
+- update manually: `fly deploy`
+- turn off: `flyctl scale count 0`
+- deploy after turning off: `flyctl scale count 1`
