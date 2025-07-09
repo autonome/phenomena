@@ -1,7 +1,11 @@
 async function addFileToRepo(auth, owner, repo, path, message, content, sha = null) {
+
+  // encode utf-8 content to base64
+  const encodedContent = Buffer.from(content, 'utf-8').toString('base64');
+
   const body = {
     message: message,
-    content: btoa(content),
+    content: encodedContent
   };
 
   // doing a replace
