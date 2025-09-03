@@ -7,8 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
-    "debug": "nodemon --exec node index.js",
-    "deploy": "fly deploy"
+    "debug": "nodemon --exec node index.js"
   },
   "author": "dietrich ayala",
   "license": "MIT",
