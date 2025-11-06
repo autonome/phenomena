@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import crypto from 'node:crypto';
 import {
   Client,
   Collection,
@@ -35,6 +36,9 @@ const todayStr = () => {
   return str;
 };
 
+// generate short unique id
+const shortId = () => crypto.randomBytes(4).toString('hex');
+
 // Create a new client instance
 const client = new Client({
   intents: [
@@ -60,7 +64,7 @@ client.once(Events.ClientReady, readyClient => {
 });
 
 client.on('messageCreate', async (msg) => {
-  console.log('messageCreate event detected:', msg);
+  //console.log('messageCreate event detected:', msg);
 
   // if dm or bot mentioned
   if (
@@ -72,16 +76,16 @@ client.on('messageCreate', async (msg) => {
 
   // otherwise, for all messages from users with role
   else if (msg.hasOwnProperty('member') && msg.member.roles.cache.has(fascinatorRoleId)) {
-    console.log('✨ msg detected, processing msg...', msg.id);
+    //console.log('✨ msg detected, processing msg...', msg.id);
 
     // remove usernames
     const cleaned = clean(msg.content);
 
     // prepare message with metadata
-    const messageData = `UserId: ${msg.author.id}\nUsername: (user)\nTime: ${msg.createdAt.toISOString()}\n\n${cleaned}`;
+    const messageData = `${cleaned}`;
 
     // upload msg to github
-    const path = `msgs/${msg.id}.txt`;
+    const path = `msgs/${shortId()}.txt`;
     await addFileToRepo(githubToken, owner, repo, path, 'new msg', messageData);
     console.log('done.');
 
