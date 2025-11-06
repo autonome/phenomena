@@ -38,13 +38,18 @@ const todayStr = () => {
 // Create a new client instance
 const client = new Client({
   intents: [
+    GatewayIntentBits.DirectMessages,
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.MessageContent,
   ],
-  partials: [Partials.Channel, Partials.Message, Partials.Reaction],
+  partials: [
+    Partials.Channel,
+    Partials.Message,
+    Partials.Reaction
+  ],
 });
 
 // When the client is ready, run this code (only once).
@@ -55,8 +60,18 @@ client.once(Events.ClientReady, readyClient => {
 });
 
 client.on('messageCreate', async (msg) => {
-  // for all messages from users with role
-  if (msg.member.roles.cache.has(fascinatorRoleId)) {
+  console.log('messageCreate event detected:', msg);
+
+  // if dm or bot mentioned
+  if (
+    (msg.guildId === null && msg.author.id != client.user.id)
+    || msg.mentions.has(client.user.id)
+  ) {
+    msg.reply('Hello! I am Phenomena, the User & Agents Archive bot. I archive messages and URLs from this server. To enable or disable archiving, go to <id:customize> for the U&A server.');
+  }
+
+  // otherwise, for all messages from users with role
+  else if (msg.hasOwnProperty('member') && msg.member.roles.cache.has(fascinatorRoleId)) {
     console.log('✨ msg detected, processing msg...', msg.id);
 
     // remove usernames
@@ -108,13 +123,6 @@ client.on('messageCreate', async (msg) => {
       console.log('done.');
     }
   }
-
-  /*
-  // for testing
-  if (msg.mentions.has(client.user.id)) {
-    msg.reply('Hello! I am the UA Discord Archive bot. I archive messages and URLs from this server.');
-  }
-  */
 });
 
 client.on('messageReactionAdd', async (reaction, user) => {
