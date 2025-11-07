@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
 import {
+  ChannelType,
   Client,
   Collection,
   Events,
@@ -64,18 +65,21 @@ client.once(Events.ClientReady, readyClient => {
 });
 
 client.on('messageCreate', async (msg) => {
+  // ignore myself always
+  if (msg.author.id == client.user.id) {
+    return;
+  }
+
   //console.log('messageCreate event detected:', msg);
 
   // if dm or bot mentioned
-  if (
-    (msg.guildId === null && msg.author.id != client.user.id)
-    || msg.mentions.has(client.user.id)
-  ) {
+  if (msg.channel.type === ChannelType.DM || msg.mentions.has(client.user.id)) {
+    //console.log('💬 dm detected:', msg.id);
     msg.reply('Hello! I am Phenomena, the User & Agents Archive bot. I archive messages and URLs from this server. To enable or disable archiving, go to <id:customize> for the U&A server.');
   }
 
   // otherwise, for all messages from users with role
-  else if (msg.hasOwnProperty('member') && msg.member.roles.cache.has(fascinatorRoleId)) {
+  else if (msg.member.roles && msg.member.roles.cache.has(fascinatorRoleId)) {
     //console.log('✨ msg detected, processing msg...', msg.id);
 
     // remove usernames
@@ -87,13 +91,13 @@ client.on('messageCreate', async (msg) => {
     // upload msg to github
     const path = `msgs/${shortId()}.txt`;
     await addFileToRepo(githubToken, owner, repo, path, 'new msg', messageData);
-    console.log('done.');
+    //console.log('done.');
 
     // detect urls and upload to github
     const newURLs = matchURLs(msg.content);
 
     if (newURLs.length > 0) {
-      console.log('URLs detected, processing urls...');
+      //console.log('URLs detected, processing urls...');
 
       // path for today's link file
       const path = `urls/${todayStr()}.txt`;
@@ -124,7 +128,7 @@ client.on('messageCreate', async (msg) => {
         await addFileToRepo(githubToken, owner, repo, path, 'new url(s)', content, sha);
       }
 
-      console.log('done.');
+      //console.log('done.');
     }
   }
 });
