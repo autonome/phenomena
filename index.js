@@ -72,10 +72,26 @@ client.on('messageCreate', async (msg) => {
 
   //console.log('messageCreate event detected:', msg);
 
-  // if dm or bot mentioned (but not via @everyone/@here)
-  if (msg.channel.type === ChannelType.DM || (msg.mentions.has(client.user.id) && !msg.mentions.everyone)) {
-    //console.log('💬 dm detected:', msg.id);
+  // if dm
+  if (msg.channel.type === ChannelType.DM) {
     msg.reply('Hello! I am Phenomena, the User & Agents Archive bot. I archive messages and URLs from this server. To enable or disable archiving, go to <id:customize> for the U&A server.');
+  }
+
+  // if bot mentioned (but not via @everyone/@here)
+  else if (msg.mentions.has(client.user.id) && !msg.mentions.everyone) {
+    const pirateLines = [
+      'Arrr! Quit rattlin\' me bones, I be busy archivin\' treasure!',
+      'Shiver me timbers! What do ye want, landlubber?',
+      'Yarrr, ye rang? I be knee-deep in messages, matey!',
+      'Blimey! Can\'t a bot plunder URLs in peace?',
+      'Avast! I be Phenomena, keeper of the digital booty!',
+      'Yo ho ho! Ye summoned the wrong bot, scallywag!',
+      'By Davy Jones\' locker, I be archivin\' as fast as me hooks allow!',
+      'Aye aye! But I ain\'t takin\' orders from the likes of ye!',
+      'Walk the plank! ...or just let me archive in peace.',
+      'Ahoy! The seas be rough and the messages be many!',
+    ];
+    msg.reply(pirateLines[Math.floor(Math.random() * pirateLines.length)]);
   }
 
   // otherwise, for all messages from users with role
