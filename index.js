@@ -72,8 +72,8 @@ client.on('messageCreate', async (msg) => {
 
   //console.log('messageCreate event detected:', msg);
 
-  // if dm or bot mentioned
-  if (msg.channel.type === ChannelType.DM || msg.mentions.has(client.user.id)) {
+  // if dm or bot mentioned (but not via @everyone/@here)
+  if (msg.channel.type === ChannelType.DM || (msg.mentions.has(client.user.id) && !msg.mentions.everyone)) {
     //console.log('💬 dm detected:', msg.id);
     msg.reply('Hello! I am Phenomena, the User & Agents Archive bot. I archive messages and URLs from this server. To enable or disable archiving, go to <id:customize> for the U&A server.');
   }
