@@ -92,8 +92,24 @@ async function deleteFileFromRepo(auth, owner, repo, path, sha) {
   return res;
 }
 
+async function createIssue(auth, owner, repo, title, body) {
+  const res = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/issues`,
+    {
+      method: 'POST',
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Bearer ${auth}`
+      },
+      body: JSON.stringify({ title, body })
+    }
+  );
+  return res.json();
+}
+
 export {
   addFileToRepo,
   getFileFromRepo,
-  deleteFileFromRepo
+  deleteFileFromRepo,
+  createIssue
 };

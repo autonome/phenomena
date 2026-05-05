@@ -12,7 +12,7 @@ import {
   REST,
   Routes } from 'discord.js';
 import 'dotenv/config';
-import { addFileToRepo, getFileFromRepo } from './github.js';
+import { addFileToRepo, getFileFromRepo, createIssue } from './github.js';
 import clean from './clean.js';
 import matchURLs from './matchURLs.js';
 const __dirname = import.meta.dirname;
@@ -40,6 +40,35 @@ const todayStr = () => {
 // generate short unique id
 const shortId = () => crypto.randomBytes(4).toString('hex');
 
+async function reportCrash(label, err) {
+  const title = `[crash] ${label}: ${err?.message ?? String(err)}`.slice(0, 250);
+  const body = [
+    `**When:** ${new Date().toISOString()}`,
+    `**Type:** ${label}`,
+    '',
+    '```',
+    err?.stack ?? String(err),
+    '```',
+  ].join('\n');
+  try {
+    await createIssue(githubToken, owner, repo, title, body);
+  } catch (e) {
+    console.error('failed to file crash issue:', e);
+  }
+}
+
+process.on('uncaughtException', async (err) => {
+  console.error('uncaughtException:', err);
+  await reportCrash('uncaughtException', err);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', async (err) => {
+  console.error('unhandledRejection:', err);
+  await reportCrash('unhandledRejection', err);
+  process.exit(1);
+});
+
 // Create a new client instance
 const client = new Client({
   intents: [
@@ -62,6 +91,11 @@ const client = new Client({
 // It makes some properties non-nullable.
 client.once(Events.ClientReady, readyClient => {
   console.log(`Ready! Logged in as ${readyClient.user.tag}`);
+});
+
+client.on('error', async (err) => {
+  console.error('client error:', err);
+  await reportCrash('discord client error', err);
 });
 
 client.on('messageCreate', async (msg) => {
@@ -95,7 +129,7 @@ client.on('messageCreate', async (msg) => {
   }
 
   // otherwise, for all messages from users with role
-  else if (msg.member.roles && msg.member.roles.cache.has(fascinatorRoleId)) {
+  else if (msg.member?.roles?.cache.has(fascinatorRoleId)) {
     //console.log('✨ msg detected, processing msg...', msg.id);
 
     // remove usernames
