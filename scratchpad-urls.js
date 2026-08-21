@@ -26,30 +26,21 @@ const newURLs = [
 const path = `urls/${todayStr()}.txt`;
 console.log('path:', path);
 
-// get sha if file for today exists
-const file = await getFileFromRepo(githubToken, path);
-const sha = file.hasOwnProperty('sha') ? file.sha : null;
+// get today's file, if it exists
+const file = await getFileFromRepo(githubToken, owner, repo, path);
 
-// get URLs already saved today
-const oldURLs = [];
-if (sha) {
-  const response = await fetch(file.download_url);
-  const txt = await response.text();
-  oldURLs.push(...txt.split('\n'));
-}
+// URLs already saved today
+const oldURLs = new Set(
+  file.exists ? file.content.split('\n').filter(url => url.length > 0) : []
+);
 
-// check if there's a delta or not
-const setsAreEqual = (a, b) => a.size === b.size && [...a].every(value => b.has(value));
-const uniqueNew = new Set(newURLs);
-const uniqueOld = new Set(oldURLs);
+// merge and upload, replacing the old file
+const merged = [...new Set([...oldURLs, ...newURLs])];
 
-// if the new urls are already saved, do nothing
-// otherwise merge the new and old urls
-// and upload, replacing the old file
-if (!setsAreEqual(uniqueNew, uniqueOld)) {
-  const uniqueMerged = [...new Set([...uniqueNew, ...uniqueOld])];
-  const content = uniqueMerged.join('\n');
-  await addFileToRepo(githubToken, path, 'new url(s)', content, sha);
+if (merged.length > oldURLs.size) {
+  await addFileToRepo(
+    githubToken, owner, repo, path, 'new url(s)', merged.join('\n'), file.sha
+  );
 }
 
 console.log('done.');

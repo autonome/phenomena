@@ -57,6 +57,55 @@ async function reportCrash(label, err) {
   }
 }
 
+// archiving failures are per-message and can repeat, so file at most one
+// issue an hour rather than one per failed message
+let lastArchiveFailureReport = 0;
+async function reportArchiveFailure(err) {
+  const hour = 60 * 60 * 1000;
+  if (Date.now() - lastArchiveFailureReport < hour) {
+    return;
+  }
+  lastArchiveFailureReport = Date.now();
+  await reportCrash('archive failure', err);
+}
+
+// merge new URLs into today's digest file, keeping what's already there.
+// retries when another message updates the file between the read and the
+// write, which GitHub rejects as a sha conflict.
+async function addURLsToDigest(newURLs) {
+  const path = `urls/${todayStr()}.txt`;
+
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const file = await getFileFromRepo(githubToken, owner, repo, path);
+
+    // URLs already saved today
+    const oldURLs = new Set(
+      file.exists ? file.content.split('\n').filter(url => url.length > 0) : []
+    );
+
+    const merged = [...new Set([...oldURLs, ...newURLs])];
+
+    // nothing new to save
+    if (merged.length === oldURLs.size) {
+      return;
+    }
+
+    try {
+      await addFileToRepo(
+        githubToken, owner, repo, path, 'new url(s)', merged.join('\n'), file.sha
+      );
+      return;
+    } catch (err) {
+      // 409/422 mean the sha we read is stale: re-read and merge again
+      if (err.status !== 409 && err.status !== 422) {
+        throw err;
+      }
+    }
+  }
+
+  throw new Error(`could not update ${path} after 3 attempts`);
+}
+
 process.on('uncaughtException', async (err) => {
   console.error('uncaughtException:', err);
   await reportCrash('uncaughtException', err);
@@ -132,53 +181,30 @@ client.on('messageCreate', async (msg) => {
   else if (msg.member?.roles?.cache.has(fascinatorRoleId)) {
     //console.log('✨ msg detected, processing msg...', msg.id);
 
-    // remove usernames
-    const cleaned = clean(msg.content);
+    try {
+      // remove usernames
+      const cleaned = clean(msg.content);
 
-    // prepare message with metadata
-    const messageData = `${cleaned}`;
+      // prepare message with metadata
+      const messageData = `${cleaned}`;
 
-    // upload msg to github
-    const path = `msgs/${shortId()}.txt`;
-    await addFileToRepo(githubToken, owner, repo, path, 'new msg', messageData);
-    //console.log('done.');
-
-    // detect urls and upload to github
-    const newURLs = matchURLs(msg.content);
-
-    if (newURLs.length > 0) {
-      //console.log('URLs detected, processing urls...');
-
-      // path for today's link file
-      const path = `urls/${todayStr()}.txt`;
-
-      // get sha if file for today exists
-      const file = await getFileFromRepo(githubToken, owner, repo, path);
-      const sha = file.hasOwnProperty('sha') ? file.sha : null;
-
-      // get URLs already saved today
-      const oldURLs = [];
-      if (sha) {
-        const response = await fetch(file.download_url);
-        const txt = await response.text();
-        oldURLs.push(...txt.split('\n'));
-      }
-
-      // check if there's a delta or not
-      const setsAreEqual = (a, b) => a.size === b.size && [...a].every(value => b.has(value));
-      const uniqueNew = new Set(newURLs);
-      const uniqueOld = new Set(oldURLs);
-
-      // if the new urls are already saved, do nothing
-      // otherwise merge the new and old urls
-      // and upload, replacing the old file
-      if (!setsAreEqual(uniqueNew, uniqueOld)) {
-        const uniqueMerged = [...new Set([...uniqueNew, ...uniqueOld])];
-        const content = uniqueMerged.join('\n');
-        await addFileToRepo(githubToken, owner, repo, path, 'new url(s)', content, sha);
-      }
-
+      // upload msg to github
+      const path = `msgs/${shortId()}.txt`;
+      await addFileToRepo(githubToken, owner, repo, path, 'new msg', messageData);
       //console.log('done.');
+
+      // detect urls and upload to github
+      const newURLs = matchURLs(msg.content);
+
+      if (newURLs.length > 0) {
+        //console.log('URLs detected, processing urls...');
+        await addURLsToDigest(newURLs);
+        //console.log('done.');
+      }
+    } catch (err) {
+      // a GitHub hiccup loses one message, it shouldn't take the bot down
+      console.error('failed to archive message:', err);
+      await reportArchiveFailure(err);
     }
   }
 });
