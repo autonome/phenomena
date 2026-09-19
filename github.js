@@ -76,20 +76,41 @@ async function addFileToRepo(auth, owner, repo, path, message, content, sha = nu
     body.sha = sha;
   }
 
-  const { ok, status, data } = await request(
-    auth,
-    `${apiBase}/repos/${owner}/${repo}/contents/${path}`,
-    {
-      method: 'PUT',
-      body: JSON.stringify(body),
-    }
-  );
+  // GitHub answers 409 when the branch head moved while the write was in
+  // flight, which happens whenever two writes land close together. creating a
+  // new file can simply be retried; replacing one can't, because the caller
+  // has to re-read the file's sha and merge again before trying.
+  // the 409 status is the signal to retry on — the delay only spaces out
+  // attempts against the remote API, which is the only place this ordering
+  // can be resolved.
+  const creating = sha === null;
+  const attempts = creating ? 3 : 1;
 
-  if (!ok) {
-    throw requestFailed('PUT', path, status, data);
+  let result;
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    if (attempt > 0) {
+      await new Promise(resolve => setTimeout(resolve, 400 * 2 ** (attempt - 1)));
+    }
+
+    result = await request(
+      auth,
+      `${apiBase}/repos/${owner}/${repo}/contents/${path}`,
+      {
+        method: 'PUT',
+        body: JSON.stringify(body),
+      }
+    );
+
+    if (result.ok || result.status !== 409) {
+      break;
+    }
   }
 
-  return data;
+  if (!result.ok) {
+    throw requestFailed('PUT', path, result.status, result.data);
+  }
+
+  return result.data;
 }
 
 // function to get the contents of a file from the repo.
