@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node test/github.test.js",
+    "test": "node test/github.test.js && node --test test/announce.test.js",
     "start": "node index.js",
     "debug": "nodemon --exec node index.js"
   },

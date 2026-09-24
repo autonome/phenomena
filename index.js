@@ -15,12 +15,14 @@ import 'dotenv/config';
 import { addFileToRepo, getFileFromRepo, createIssue } from './github.js';
 import clean from './clean.js';
 import matchURLs from './matchURLs.js';
+import { createAnnounceServer } from './announce.js';
 const __dirname = import.meta.dirname;
 
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.DISCORD_CLIENT_ID;
 const guildId = process.env.DISCORD_GUILD_ID;
 const githubToken = process.env.GH_TOKEN;
+const announceToken = process.env.ANNOUNCE_TOKEN;
 
 const owner = 'ua-community';
 const repo = 'ua-discord-archive';
@@ -252,6 +254,25 @@ client.on('messageReactionRemove', async (reaction, user) => {
     reaction.message.guild.members.fetch(user.id).then(user => user.roles.remove(role))
   }
 });
+
+// lets an external build pipeline post one announcement to a fixed channel,
+// since nothing outside Discord can otherwise make the bot post
+if (announceToken) {
+  const server = createAnnounceServer({
+    token: announceToken,
+    getChannel: async () => {
+      const channelId = process.env.NEV_CHANNEL_ID;
+      if (!client.isReady() || !channelId) {
+        return null;
+      }
+      return client.channels.fetch(channelId);
+    },
+  });
+  const port = process.env.PORT || 3000;
+  server.listen(port, () => {
+    console.log(`announce server listening on ${port}`);
+  });
+}
 
 // Log in to Discord with your client's token
 client.login(token);
