@@ -255,13 +255,19 @@ client.on('messageReactionRemove', async (reaction, user) => {
   }
 });
 
-// lets an external build pipeline post one announcement to a fixed channel,
-// since nothing outside Discord can otherwise make the bot post
+// lets an external build pipeline post one announcement to a channel, since
+// nothing outside Discord can otherwise make the bot post. With no `channel`
+// in the body, NEV_CHANNEL_ID is used; a body with "channel": "folknet"
+// posts to FOLKNET_CHANNEL_ID instead. A name with no matching env var (or a
+// client that isn't ready) yields 503.
 if (announceToken) {
   const server = createAnnounceServer({
     token: announceToken,
-    getChannel: async () => {
-      const channelId = process.env.NEV_CHANNEL_ID;
+    getChannel: async (name) => {
+      const envVar = name
+        ? `${name.toUpperCase().replace(/-/g, '_')}_CHANNEL_ID`
+        : 'NEV_CHANNEL_ID';
+      const channelId = process.env[envVar];
       if (!client.isReady() || !channelId) {
         return null;
       }

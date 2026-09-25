@@ -164,3 +164,65 @@ test('send failure returns 502', async () => {
   server.close();
   server.closeAllConnections();
 });
+
+test('valid request with a named channel calls getChannel with that name', async () => {
+  const sent = [];
+  const requestedNames = [];
+  const fakeChannel = {
+    send: async (payload) => {
+      sent.push(payload);
+      return { id: 'msg-123' };
+    },
+  };
+  const { server, url } = await startServer({
+    getChannel: async (name) => {
+      requestedNames.push(name);
+      return fakeChannel;
+    },
+  });
+
+  const res = await post(url, {
+    headers: { Authorization: `Bearer ${TOKEN}` },
+    body: { title: 'hi', channel: 'folknet' },
+  });
+
+  assert.equal(res.status, 200);
+  assert.equal(sent.length, 1);
+  assert.deepEqual(requestedNames, ['folknet']);
+  server.close();
+  server.closeAllConnections();
+});
+
+test('valid request without a channel calls getChannel with undefined', async () => {
+  const fakeChannel = { send: async () => ({ id: 'msg-123' }) };
+  const requestedNames = [];
+  const { server, url } = await startServer({
+    getChannel: async (name) => {
+      requestedNames.push(name);
+      return fakeChannel;
+    },
+  });
+
+  const res = await post(url, {
+    headers: { Authorization: `Bearer ${TOKEN}` },
+    body: { title: 'hi' },
+  });
+
+  assert.equal(res.status, 200);
+  assert.deepEqual(requestedNames, [undefined]);
+  server.close();
+  server.closeAllConnections();
+});
+
+test('invalid channel name is rejected with 400 without calling getChannel', async () => {
+  const { server, url } = await startServer({ getChannel: noChannel });
+  const res = await post(url, {
+    headers: { Authorization: `Bearer ${TOKEN}` },
+    body: { title: 'hi', channel: 'Bad Name!' },
+  });
+  assert.equal(res.status, 400);
+  const data = await res.json();
+  assert.match(data.error, /channel/);
+  server.close();
+  server.closeAllConnections();
+});

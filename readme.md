@@ -81,7 +81,8 @@ Set `ANNOUNCE_TOKEN` to enable the HTTP server (it's off if unset). Env vars:
   "description": "string, optional, up to 4096 characters",
   "url": "https url, optional",
   "fields": [{ "name": "string, up to 256 chars", "value": "string, up to 1024 chars", "inline": false }],
-  "footer": "string, optional, up to 2048 characters"
+  "footer": "string, optional, up to 2048 characters",
+  "channel": "optional short lowercase name, e.g. \"folknet\"; posts to <NAME>_CHANNEL_ID instead of NEV_CHANNEL_ID"
 }
 ```
 

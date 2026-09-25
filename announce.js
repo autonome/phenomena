@@ -171,8 +171,9 @@ function validateAnnouncement(body) {
 }
 
 // factory so the HTTP handling can be exercised without a real Discord
-// client: `getChannel` is async and returns the channel to post to (or a
-// falsy value when one isn't available)
+// client: `getChannel(name)` receives the body's optional `channel` field,
+// undefined for the default channel, and is async, returning the channel to
+// post to (or a falsy value when one isn't available)
 function createAnnounceServer({ token, getChannel }) {
   return http.createServer(async (req, res) => {
     const { method } = req;
@@ -222,9 +223,16 @@ function createAnnounceServer({ token, getChannel }) {
         return;
       }
 
+      const { channel: channelName } = body;
+      if (channelName !== undefined
+          && (typeof channelName !== 'string' || !/^[a-z0-9-]{1,32}$/.test(channelName))) {
+        respond(400, { error: 'channel must be a short lowercase name' });
+        return;
+      }
+
       let channel;
       try {
-        channel = await getChannel();
+        channel = await getChannel(channelName);
       } catch {
         channel = null;
       }
