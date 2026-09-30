@@ -1,5 +1,6 @@
 node_modules/
 .env
+.git/
 
 # local/secrets/artifacts
 .claude/
