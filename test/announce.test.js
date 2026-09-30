@@ -226,3 +226,77 @@ test('invalid channel name is rejected with 400 without calling getChannel', asy
   server.close();
   server.closeAllConnections();
 });
+
+function put(url, { headers = {}, body } = {}) {
+  return fetch(`${url}/folknet/usage`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', ...headers },
+    body: typeof body === 'string' ? body : JSON.stringify(body),
+  });
+}
+
+function startUsageServer(usageStore) {
+  const server = createAnnounceServer({ token: TOKEN, getChannel: noChannel, usageStore });
+  return new Promise((resolve) => {
+    server.listen(0, '127.0.0.1', () => {
+      const { port } = server.address();
+      resolve({ server, url: `http://127.0.0.1:${port}` });
+    });
+  });
+}
+
+test('PUT /folknet/usage without auth is rejected with 401', async () => {
+  const { server, url } = await startUsageServer({ set: () => {}, get: () => null });
+  const res = await put(url, { body: { text: 'hi' } });
+  assert.equal(res.status, 401);
+  server.close();
+  server.closeAllConnections();
+});
+
+test('PUT /folknet/usage rejects a missing, empty or too long text with 400', async () => {
+  const stored = [];
+  const { server, url } = await startUsageServer({ set: (t) => stored.push(t), get: () => null });
+  const headers = { Authorization: `Bearer ${TOKEN}` };
+  for (const body of [{}, { text: '' }, { text: 5 }, { text: 'x'.repeat(1801) }]) {
+    const res = await put(url, { headers, body });
+    assert.equal(res.status, 400);
+    assert.ok((await res.json()).error);
+  }
+  assert.deepEqual(stored, []);
+  server.close();
+  server.closeAllConnections();
+});
+
+test('PUT /folknet/usage rejects invalid JSON with 400', async () => {
+  const { server, url } = await startUsageServer({ set: () => {}, get: () => null });
+  const res = await put(url, { headers: { Authorization: `Bearer ${TOKEN}` }, body: '{nope' });
+  assert.equal(res.status, 400);
+  assert.match((await res.json()).error, /JSON/);
+  server.close();
+  server.closeAllConnections();
+});
+
+test('PUT /folknet/usage stores the text and returns 200', async () => {
+  const stored = [];
+  const { server, url } = await startUsageServer({ set: (t) => stored.push(t), get: () => null });
+  const res = await put(url, {
+    headers: { Authorization: `Bearer ${TOKEN}` },
+    body: { text: 'x'.repeat(1800) },
+  });
+  assert.equal(res.status, 200);
+  assert.deepEqual(await res.json(), { ok: true });
+  assert.deepEqual(stored, ['x'.repeat(1800)]);
+  server.close();
+  server.closeAllConnections();
+});
+
+test('PUT /folknet/usage returns 404 when no usage store is given', async () => {
+  const { server, url } = await startServer({ getChannel: noChannel });
+  const res = await put(url, {
+    headers: { Authorization: `Bearer ${TOKEN}` },
+    body: { text: 'hi' },
+  });
+  assert.equal(res.status, 404);
+  server.close();
+  server.closeAllConnections();
+});

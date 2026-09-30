@@ -88,6 +88,8 @@ Set `ANNOUNCE_TOKEN` to enable the HTTP server (it's off if unset). Env vars:
 
 At most 25 fields, and the embed's total character count can't exceed 6000. Invalid input gets a `400` with a short reason. A successful post returns `200 { "ok": true, "id": "<message id>" }`.
 
+`PUT /folknet/usage` (same bearer token) takes `{"text": "<1 to 1800 characters>"}` and keeps it in memory in `usage.js`; `commands.js` answers `@phenomena folknet usage` with that text and its age (marked stale after 30 minutes), or `No usage reported yet.` after a restart.
+
 ```sh
 curl -X POST "$ANNOUNCE_URL/announce" \
   -H "Authorization: Bearer $ANNOUNCE_TOKEN" \

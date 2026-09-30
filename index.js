@@ -16,6 +16,8 @@ import { addFileToRepo, getFileFromRepo, createIssue } from './github.js';
 import clean from './clean.js';
 import matchURLs from './matchURLs.js';
 import { createAnnounceServer } from './announce.js';
+import { createUsageStore } from './usage.js';
+import { handleMention } from './commands.js';
 const __dirname = import.meta.dirname;
 
 const token = process.env.DISCORD_TOKEN;
@@ -30,6 +32,9 @@ const repo = 'ua-discord-archive';
 const botId = '1356506282114158623';
 const fascinatorRoleId = '1356666056201998426';
 const reactionRoleMessageId = '1356979729764450555';
+
+// latest rig usage summary, pushed in through the announce server
+const usageStore = createUsageStore();
 
 // string of today's date in YYYY-MM-DD format
 const todayStr = () => {
@@ -164,6 +169,13 @@ client.on('messageCreate', async (msg) => {
 
   // if bot mentioned (but not via @everyone/@here)
   else if (msg.mentions.has(client.user.id) && !msg.mentions.everyone) {
+    // commands first, the pirate line is the fallback
+    const commandReply = handleMention(msg.content, botId, { usageStore });
+    if (commandReply !== null) {
+      msg.reply(commandReply);
+      return;
+    }
+
     const pirateLines = [
       'Arrr! Quit rattlin\' me bones, I be busy archivin\' treasure!',
       'Shiver me timbers! What do ye want, landlubber?',
@@ -263,6 +275,7 @@ client.on('messageReactionRemove', async (reaction, user) => {
 if (announceToken) {
   const server = createAnnounceServer({
     token: announceToken,
+    usageStore,
     getChannel: async (name) => {
       const envVar = name
         ? `${name.toUpperCase().replace(/-/g, '_')}_CHANNEL_ID`

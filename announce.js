@@ -3,6 +3,9 @@ import crypto from 'node:crypto';
 
 const MAX_BODY_BYTES = 32 * 1024;
 
+// fits in one Discord message alongside the "as of" line
+const USAGE_MAX_CHARS = 1800;
+
 const EMBED_LIMITS = {
   title: 256,
   description: 4096,
@@ -173,8 +176,9 @@ function validateAnnouncement(body) {
 // factory so the HTTP handling can be exercised without a real Discord
 // client: `getChannel(name)` receives the body's optional `channel` field,
 // undefined for the default channel, and is async, returning the channel to
-// post to (or a falsy value when one isn't available)
-function createAnnounceServer({ token, getChannel }) {
+// post to (or a falsy value when one isn't available). `usageStore`, when
+// given, enables PUT /folknet/usage; it needs `set(text)`
+function createAnnounceServer({ token, getChannel, usageStore }) {
   return http.createServer(async (req, res) => {
     const { method } = req;
     const { pathname } = new URL(req.url, 'http://localhost');
@@ -247,6 +251,43 @@ function createAnnounceServer({ token, getChannel }) {
       } catch {
         respond(502, { error: 'failed to send announcement' });
       }
+      return;
+    }
+
+    if (usageStore && method === 'PUT' && pathname === '/folknet/usage') {
+      if (!isAuthorized(req, token)) {
+        respond(401, { error: 'unauthorized' });
+        return;
+      }
+
+      let raw;
+      try {
+        raw = await readBody(req, MAX_BODY_BYTES);
+      } catch (err) {
+        respond(err.tooLarge ? 413 : 400, { error: err.tooLarge ? 'payload too large' : 'could not read body' });
+        return;
+      }
+
+      let body;
+      try {
+        body = JSON.parse(raw.toString('utf8'));
+      } catch {
+        respond(400, { error: 'invalid JSON' });
+        return;
+      }
+
+      const text = body?.text;
+      if (typeof text !== 'string' || text.length === 0) {
+        respond(400, { error: 'text is required' });
+        return;
+      }
+      if (text.length > USAGE_MAX_CHARS) {
+        respond(400, { error: `text exceeds ${USAGE_MAX_CHARS} characters` });
+        return;
+      }
+
+      usageStore.set(text);
+      respond(200, { ok: true });
       return;
     }
 
