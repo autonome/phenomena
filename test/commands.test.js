@@ -21,30 +21,34 @@ test('usage with nothing stored', () => {
   assert.equal(handleMention(`<@${BOT}> folknet usage`, BOT, { usageStore }), 'No usage reported yet.');
 });
 
-test('usage with a fresh report', () => {
+function usageCard(text, footer) {
+  return { embeds: [{ title: 'Rig usage', description: text, footer: { text: footer } }] };
+}
+
+test('usage with a fresh report is a card', () => {
   const now = 1_000_000_000;
   const usageStore = storeAt('cpu 40%', now - 5 * MIN);
-  assert.equal(
+  assert.deepEqual(
     handleMention(`<@${BOT}> folknet usage`, BOT, { usageStore, now }),
-    'cpu 40%\nas of 5 min ago',
+    usageCard('cpu 40%', 'as of 5 min ago'),
   );
 });
 
 test('usage reported under a minute ago says just now', () => {
   const now = 1_000_000_000;
   const usageStore = storeAt('cpu 40%', now - 10 * 1000);
-  assert.equal(
+  assert.deepEqual(
     handleMention(`<@${BOT}> folknet usage`, BOT, { usageStore, now }),
-    'cpu 40%\nas of just now',
+    usageCard('cpu 40%', 'as of just now'),
   );
 });
 
 test('usage with a stale report is marked', () => {
   const now = 1_000_000_000;
   const usageStore = storeAt('cpu 40%', now - 45 * MIN);
-  assert.equal(
+  assert.deepEqual(
     handleMention(`<@${BOT}> folknet usage`, BOT, { usageStore, now }),
-    'cpu 40%\nas of 45 min ago (stale: the rig has not reported since)',
+    usageCard('cpu 40%', 'as of 45 min ago (stale: the rig has not reported since)'),
   );
 });
 

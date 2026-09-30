@@ -1,7 +1,7 @@
 const STALE_AFTER_MINUTES = 30;
 
 // answers a mention of the bot that carries a command, returning the reply
-// string, or null when the message isn't a command (the caller then falls
+// (a string, or a message payload with an embed), or null when the message isn't a command (the caller then falls
 // back to its default reply)
 function handleMention(content, botId, { usageStore, now = Date.now() } = {}) {
   const words = content
@@ -28,7 +28,8 @@ function handleMention(content, botId, { usageStore, now = Date.now() } = {}) {
   if (minutes > STALE_AFTER_MINUTES) {
     age += ' (stale: the rig has not reported since)';
   }
-  return `${report.text}\nas of ${age}`;
+  // an embed, like the announcements: smaller text than a plain reply
+  return { embeds: [{ title: 'Rig usage', description: report.text, footer: { text: `as of ${age}` } }] };
 }
 
 export { handleMention };
